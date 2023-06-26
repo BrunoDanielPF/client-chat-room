@@ -1,5 +1,7 @@
 # ChatRoom
 
+Projeto desenvolvido utilizando a tecnologia Chat-GPT
+
 Este é um componente React que implementa uma sala de chat usando WebSockets e a biblioteca `stompjs` para se comunicar com um servidor de chat.
 
 ## Dependências

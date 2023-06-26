@@ -19,8 +19,8 @@ const ChatRoom = () => {
     }, [userData]);
 
     const connect = () => {
-        // let Sock = new SockJS('https://spring-chat-backend-production.up.railway.app/ws'); // para deploy
-        let Sock = new SockJS('http://localhost:8080/ws'); // para testes locais
+        let Sock = new SockJS('https://spring-chat-backend-production.up.railway.app/ws'); // para deploy
+        // let Sock = new SockJS('http://localhost:8080/ws'); // para testes locais
         stompClient = over(Sock);
         stompClient.connect({}, onConnected, onError);
     };

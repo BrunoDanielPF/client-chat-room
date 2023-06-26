@@ -141,7 +141,7 @@ const ChatRoom = () => {
 
                 <div className="send-message">
                     <input type="text" className="input-message" placeholder="digite a mensagem" value={userData.message} onChange={handleMessage} /> 
-                    <button type="button" className="send-button" onClick={sendValue}>send</button>
+                    <button type="button" className="send-button" onClick={sendValue}>Enviar</button>
                 </div>
             </div>}
             {tab!=="CHATROOM" && <div className="chat-content">

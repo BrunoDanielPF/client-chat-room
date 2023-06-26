@@ -1,71 +1,151 @@
-# Getting Started with Create React App
+# ChatRoom
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este é um componente React que implementa uma sala de chat usando WebSockets e a biblioteca `stompjs` para se comunicar com um servidor de chat.
 
-## Available Scripts
+## Dependências
 
-In the project directory, you can run:
+Certifique-se de ter as seguintes dependências instaladas no seu projeto React:
 
-### `npm start`
+- `react`
+- `stompjs`
+- `sockjs-client`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Uso
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. Importe as dependências necessárias:
 
-### `npm test`
+```jsx
+import React, { useEffect, useState } from 'react';
+import { over } from 'stompjs';
+import SockJS from 'sockjs-client';
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. Crie uma instância do cliente WebSocket e defina o estado inicial do componente:
 
-### `npm run build`
+```jsx
+var stompClient = null;
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+const ChatRoom = () => {
+    const [privateChats, setPrivateChats] = useState(new Map());
+    const [publicChats, setPublicChats] = useState([]);
+    const [tab, setTab] = useState("CHATROOM");
+    const [userData, setUserData] = useState({
+        username: '',
+        receivername: '',
+        connected: false,
+        message: ''
+    });
+    
+    // Resto do código...
+};
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Defina a função `connect()` para estabelecer a conexão com o servidor de chat:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```jsx
+const connect = () => {
+    // let Sock = new SockJS('https://spring-chat-backend-production.up.railway.app/ws'); // para deploy
+    let Sock = new SockJS('http://localhost:8080/ws'); // para testes locais
+    stompClient = over(Sock);
+    stompClient.connect({}, onConnected, onError);
+};
+```
 
-### `npm run eject`
+4. Implemente as funções de callback para manipular eventos de conexão, mensagens recebidas e erros:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```jsx
+const onConnected = () => {
+    setUserData({ ...userData, "connected": true });
+    stompClient.subscribe('/chatroom/public', onMessageReceived);
+    stompClient.subscribe('/user/' + userData.username + '/private', onPrivateMessage);
+    userJoin();
+};
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+const userJoin = () => {
+    var chatMessage = {
+        senderName: userData.username,
+        status: "JOIN"
+    };
+    stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
+};
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+const onMessageReceived = (payload) => {
+    // Resto da implementação...
+};
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+const onPrivateMessage = (payload) => {
+    // Resto da implementação...
+};
 
-## Learn More
+const onError = (err) => {
+    console.log(err);
+};
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+5. Implemente as funções para lidar com o envio de mensagens:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```jsx
+const handleMessage = (event) => {
+    const { value } = event.target;
+    setUserData({ ...userData, "message": value });
+};
 
-### Code Splitting
+const sendValue = () => {
+    // Resto da implementação...
+};
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+const sendPrivateValue = () => {
+    // Resto da implementação...
+};
 
-### Analyzing the Bundle Size
+const handleUsername = (event) => {
+    const { value } = event.target;
+    setUserData({ ...userData, "username": value });
+};
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+const registerUser = () => {
+    connect();
+};
 
-### Making a Progressive Web App
+const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+        if (tab === "CHATROOM") {
+            sendValue();
+        } else {
+            sendPrivateValue();
+        }
+    }
+};
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+6. Renderize o componente de acordo com o estado atual:
 
-### Advanced Configuration
+```jsx
+return (
+    <div className="container">
+        {userData.connected ?
+            // Exibição da sala de chat quando conectado
+            <div className="
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+chat-box">
+                {/* Resto da implementação... */}
+            </div>
+            :
+            // Exibição do formulário de registro quando desconectado
+            <div className="register">
+                {/* Resto da implementação... */}
+            </div>
+        }
+    </div>
+);
+```
 
-### Deployment
+7. Exporte o componente para uso em outros arquivos:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```jsx
+export default ChatRoom;
+```
 
-### `npm run build` fails to minify
+Certifique-se de adicionar estilos CSS adequados para a aparência desejada do componente.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# client-chat-room
+Esse é um exemplo básico da implementação de uma sala de chat em um projeto React utilizando WebSockets. Você pode personalizar e aprimorar o código de acordo com suas necessidades específicas.

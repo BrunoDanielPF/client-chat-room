@@ -145,7 +145,3 @@ chat-box">
 ```jsx
 export default ChatRoom;
 ```
-
-Certifique-se de adicionar estilos CSS adequados para a aparência desejada do componente.
-
-Esse é um exemplo básico da implementação de uma sala de chat em um projeto React utilizando WebSockets. Você pode personalizar e aprimorar o código de acordo com suas necessidades específicas.

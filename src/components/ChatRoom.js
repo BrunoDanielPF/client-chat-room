@@ -152,7 +152,7 @@ const ChatRoom = () => {
                             ))}
                         </ul>
 
-                        <div className="send-message">
+                        <div className="send-message-chat">
                             <input type="text" className="input-message" placeholder="digite a mensagem" value={userData.message} onChange={handleMessage} onKeyDown={handleKeyDown} />
                             <button type="button" className="send-button" onClick={sendValue}>Enviar</button>
                         </div>
@@ -168,7 +168,7 @@ const ChatRoom = () => {
                             ))}
                         </ul>
 
-                        <div className="send-message">
+                        <div className="send-message-chat">
                             <input type="text" className="input-message" placeholder="digite a mensagem" value={userData.message} onChange={handleMessage} onKeyDown={handleKeyDown} />
                             <button type="button" className="send-button" onClick={sendPrivateValue}>Enviar</button>
                         </div>

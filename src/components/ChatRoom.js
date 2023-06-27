@@ -3,6 +3,7 @@ import { over } from 'stompjs';
 import SockJS from 'sockjs-client';
 
 var stompClient = null;
+
 const ChatRoom = () => {
     const [privateChats, setPrivateChats] = useState(new Map());
     const [publicChats, setPublicChats] = useState([]);
@@ -134,10 +135,24 @@ const ChatRoom = () => {
             {userData.connected ?
                 <div className="chat-box">
                     <div className="member-list">
-                        <ul>
-                            <li onClick={() => { setTab("CHATROOM") }} className={`member ${tab === "CHATROOM" && "active"}`}>Sala de chat</li>
+                        <ul className="nav nav-pills">
+                            <li className="nav-item">
+                                <button
+                                    className={`nav-link ${tab === "CHATROOM" && "active"}`}
+                                    onClick={() => { setTab("CHATROOM") }}
+                                >
+                                    Sala de chat
+                                </button>
+                            </li>
                             {[...privateChats.keys()].map((name, index) => (
-                                <li onClick={() => { setTab(name) }} className={`member ${tab === name && "active"}`} key={index}>{name}</li>
+                                <li className="nav-item" key={index}>
+                                    <button
+                                        className={`nav-link ${tab === name && "active"}`}
+                                        onClick={() => { setTab(name) }}
+                                    >
+                                        {name}
+                                    </button>
+                                </li>
                             ))}
                         </ul>
                     </div>
@@ -153,8 +168,8 @@ const ChatRoom = () => {
                         </ul>
 
                         <div className="send-message-chat">
-                            <input type="text" className="input-message" placeholder="digite a mensagem" value={userData.message} onChange={handleMessage} onKeyDown={handleKeyDown} />
-                            <button type="button" className="send-button" onClick={sendValue}>Enviar</button>
+                            <input type="text" className="input-message" placeholder="Digite a mensagem" value={userData.message} onChange={handleMessage} onKeyDown={handleKeyDown} />
+                            <button type="button" className="btn btn-primary send-button" onClick={sendValue}>Enviar</button>
                         </div>
                     </div>}
                     {tab !== "CHATROOM" && <div className="chat-content">
@@ -169,8 +184,8 @@ const ChatRoom = () => {
                         </ul>
 
                         <div className="send-message-chat">
-                            <input type="text" className="input-message" placeholder="digite a mensagem" value={userData.message} onChange={handleMessage} onKeyDown={handleKeyDown} />
-                            <button type="button" className="send-button" onClick={sendPrivateValue}>Enviar</button>
+                            <input type="text" className="input-message" placeholder="Digite a mensagem" value={userData.message} onChange={handleMessage} onKeyDown={handleKeyDown} />
+                            <button type="button" className="btn btn-primary send-button" onClick={sendPrivateValue}>Enviar</button>
                         </div>
                     </div>}
                 </div>
@@ -178,13 +193,13 @@ const ChatRoom = () => {
                 <div className="register">
                     <input
                         id="user-name"
-                        placeholder="Enter your name"
+                        placeholder="Digite seu nome"
                         name="userName"
                         value={userData.username}
                         onChange={handleUsername}
-                        margin="normal"
+                        className="form-control"
                     />
-                    <button type="button" onClick={registerUser}>
+                    <button type="button" className="btn btn-primary" onClick={registerUser}>
                         Conectar
                     </button>
                 </div>}

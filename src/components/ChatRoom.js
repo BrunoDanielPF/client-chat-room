@@ -82,6 +82,10 @@ const ChatRoom = () => {
 
     const sendValue = () => {
         if (stompClient) {
+            if (userData.message.trim() === '') {
+                alert("erro na validacao")
+                return; // Interrompe a execução se o campo estiver vazio
+              }
             var chatMessage = {
                 senderName: userData.username,
                 message: userData.message,

@@ -14,14 +14,15 @@ const ChatRoom = () => {
         connected: false,
         message: ''
     });
+    const [isEmptyMessage, setIsEmptyMessage] = useState(false);
 
     useEffect(() => {
         console.log(userData);
     }, [userData]);
 
     const connect = () => {
-        let Sock = new SockJS('https://spring-chat-backend-production.up.railway.app/ws'); // para deploy
-        // let Sock = new SockJS('http://localhost:8080/ws'); // para testes locais
+        // let Sock = new SockJS('https://spring-chat-backend-production.up.railway.app/ws'); // para deploy
+        let Sock = new SockJS('http://localhost:8080/ws'); // para testes locais
         stompClient = over(Sock);
         stompClient.connect({}, onConnected, onError);
     };
@@ -83,9 +84,10 @@ const ChatRoom = () => {
     const sendValue = () => {
         if (stompClient) {
             if (userData.message.trim() === '') {
-                alert("erro na validacao")
-                return; // Interrompe a execução se o campo estiver vazio
-              }
+                setIsEmptyMessage(true);
+                return;
+            }
+
             var chatMessage = {
                 senderName: userData.username,
                 message: userData.message,
@@ -94,11 +96,17 @@ const ChatRoom = () => {
             console.log(chatMessage);
             stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
             setUserData({ ...userData, "message": "" });
+            setIsEmptyMessage(false);
         }
     };
 
     const sendPrivateValue = () => {
         if (stompClient) {
+            if (userData.message.trim() === '') {
+                setIsEmptyMessage(true);
+                return;
+            }
+
             var chatMessage = {
                 senderName: userData.username,
                 receiverName: tab,
@@ -112,6 +120,7 @@ const ChatRoom = () => {
             }
             stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
             setUserData({ ...userData, "message": "" });
+            setIsEmptyMessage(false);
         }
     };
 
@@ -133,6 +142,18 @@ const ChatRoom = () => {
             }
         }
     };
+
+    useEffect(() => {
+        if (isEmptyMessage) {
+            const timer = setTimeout(() => {
+                setIsEmptyMessage(false);
+            }, 5000);
+
+            return () => {
+                clearTimeout(timer);
+            };
+        }
+    }, [isEmptyMessage]);
 
     return (
         <div className="container">
@@ -207,6 +228,15 @@ const ChatRoom = () => {
                         Conectar
                     </button>
                 </div>}
+            {isEmptyMessage && (
+                <div className="modal" style={{ display: "block" }}>
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-body">O campo de mensagem está vazio.</div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
